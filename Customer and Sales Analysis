@@ -1,11 +1,4 @@
-SELECT * FROM BIT_DB.customers;
-
-Select * From BIT_DB.JanSales;
-
-Select * 
-FROM BIT_DB.customers
-WHERE length(order_id) = 6
-AND order_id <> 'Order ID';
+#In this project I'm querying a database with customer and sales information to analyze sales trends and consumer behaviours#
 
 #How many orders were placed in January?#
 Select count(orderID) 
