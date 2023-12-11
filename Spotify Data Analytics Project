@@ -1,0 +1,27 @@
+SELECT * 
+FROM BIT_DB.Spotifydata
+
+#What are the 10 best songs to dance to?#
+Select artist_name, track_name, danceability
+From BIT_DB.Spotifydata
+Order By danceability desc
+Limit 10;
+
+#Which artists have multiple songs over 90 popularity and what are those songs?#
+Select artist_name, track_name, popularity
+From BIT_DB.Spotifydata
+Where popularity > 89
+Order by artist_name, popularity desc;
+
+Select artist_name, count(artist_name) as hits
+From BIT_DB.Spotifydata
+Where popularity > 89
+Group by artist_name
+Having hits > 1;
+
+#Which 3 artists would you recommend if someone likes low energy music?#
+Select artist_name, avg(energy)
+From BIT_DB.Spotifydata
+Group by artist_name
+Order by avg(energy) asc
+Limit 3;
