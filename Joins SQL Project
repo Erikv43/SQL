@@ -1,0 +1,58 @@
+#This project uses sales, customer, employee and music data from multiple tables#
+#Many of the tables are not directly connected so multiple JOINS are needed to complete the data and answer the questions#
+
+#Find the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country#
+Select c.FirstName, c.LastName, i.InvoiceID, i.InvoiceDate, i.BillingCountry
+From chinook.invoices i
+Join chinook.customers c
+on i.CustomerId = c.CustomerId
+Where BillingCountry = 'Brazil';
+
+#Provide a query that shows the invoices associated with each sales agent. The resulting table should include the Sales Agent's full name#
+Select e.LastName, e.Firstname, i.InvoiceId
+From Employees e 
+Join Customers c ON c.SupportRepId = e.EmployeeId
+Join Invoices i ON i.CustomerId = c.CustomerId;
+
+#Write a query that includes the purchased track name AND artist name with each invoice line ID#
+Select tr.Name as Track, ar.Name as Artist, inv.InvoiceId
+From invoices inv
+Join invoice_items it on inv.InvoiceId = it.InvoiceId
+Join tracks tr on tr.TrackId = it.TrackId
+Join albums al on al.AlbumId = tr.AlbumId
+Join artists ar on ar.ArtistId = al.ArtistId;
+
+#Provide a query that shows all the Tracks, and include the Album name, Media type, and Genre#
+Select t.Name as Track,  a.Title as Album, mt.Name as MediaType, g.Name as Genre
+From tracks t
+Join media_types mt on mt.MediaTypeId = t.MediaTypeId
+Join genres g on g.GenreId = t.GenreId
+Join albums a on a.AlbumId = t.AlbumId;
+
+#Which sales agent made the most dollars in sales in 2009?#
+Select FirstName, LastName, Round(Sum(inv.Total), 2) as TotalSales
+From employees e
+Join customers c on e.EmployeeId = c.SupportRepId
+Join invoices inv on inv.CustomerId = c.CustomerId
+Join invoice_items it on it.InvoiceId = inv.InvoiceId
+Where e.Title = 'Sales Support Agent' and inv.InvoiceDate like'2009%'
+Group by e.FirstName
+Order by TotalSales Desc Limit 1;
+
+#Which Tracks were purchased the most in 2009?#
+Select t.name as Track, Count(t.Name) as Total
+From invoice_items it
+Join invoices inv on inv.InvoiceId = it.InvoiceId
+join tracks t on t.TrackId = it.TrackId
+Where inv.InvoiceDate like'2009%'
+Group by Track
+Order by Total desc;
+
+#Which Artist produced the most purchased songs?#
+Select ar.Name as Artist, Count(ar.Name) as SongsPurchased 
+From artists ar
+Join albums al on al.ArtistId = ar.ArtistId
+Join tracks tr on tr.AlbumId = al.AlbumId
+Join invoice_items it on it.trackId = tr.TrackId
+Group By Artist
+Order by SongsPurchased Desc Limit 1;
